@@ -1,5 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using CommunityToolkit.Mvvm.Input;
 using Prism.Mvvm;
+using SDTaskRunner.Core.Progress;
 using SDTaskRunner.Models;
 using SDTaskRunner.Utils;
 
@@ -9,6 +13,7 @@ public class MainWindowViewModel : BindableBase
 {
     private readonly AppVersionInfo appVersionInfo = new();
     private GenerationRequest generationRequest;
+    private IProgressSource progressSource;
 
     public MainWindowViewModel()
     {
@@ -16,6 +21,23 @@ public class MainWindowViewModel : BindableBase
     }
 
     public string Title => appVersionInfo.GetAppNameWithVersion();
+
+    public AsyncRelayCommand GenerateAsyncCommand => new (async () =>
+    {
+        var request = GenerationRequest;
+        request.Steps.Value = 5;
+
+        progressSource = new FakeGenerationRunner(
+            samplingSteps: request.Steps.Value,
+            totalTime: TimeSpan.FromSeconds(5));
+
+        await foreach (var progress in progressSource.RunAsync(CancellationToken.None))
+        {
+            // ここが /progress を叩いてるのと同じ
+            // UpdateUi(progress);
+            Console.WriteLine($"progress = {progress.Progress}");
+        }
+    });
 
     public GenerationRequest GenerationRequest
     {
