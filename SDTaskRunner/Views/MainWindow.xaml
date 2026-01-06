@@ -1,10 +1,101 @@
-﻿<Window x:Class="SDTaskRunner.Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:prism="http://prismlibrary.com/"
-        prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="350" Width="525">
+﻿<Window
+    x:Class="SDTaskRunner.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:SDTaskRunner.Models"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewModels="clr-namespace:SDTaskRunner.ViewModels"
+    Title="{Binding Title}"
+    Width="525"
+    Height="350"
+    d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <DataTemplate x:Key="ListBoxItemTemplate" DataType="{x:Type models:GenerationRequest}">
+            <TextBlock Text="{Binding Header}" />
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid>
-        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <ListBox
+                Grid.Row="0"
+                ItemTemplate="{StaticResource ListBoxItemTemplate}"
+                ItemsSource="{Binding RunningRequestsViewModel.Items}"
+                SelectedItem="{Binding RunningRequestsViewModel.SelectedItem}" />
+
+            <ListBox
+                Grid.Row="1"
+                ItemTemplate="{StaticResource ListBoxItemTemplate}"
+                ItemsSource="{Binding PendingRequestsViewModel.Items}"
+                SelectedItem="{Binding PendingRequestsViewModel.SelectedItem}" />
+        </Grid>
+
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="12">
+
+            <!-- Prompt -->
+            <TextBlock Text="Prompt" />
+            <TextBox Text="{Binding ActiveGenerationRequest.Prompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <!-- Negative Prompt -->
+            <TextBlock Margin="0,8,0,0" Text="Negative Prompt" />
+            <TextBox Text="{Binding ActiveGenerationRequest.NegativePrompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <!-- Width / Height -->
+            <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                <StackPanel>
+                    <TextBlock Text="Width" />
+                    <TextBox Width="80" Text="{Binding ActiveGenerationRequest.Width.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <StackPanel Margin="12,0,0,0">
+                    <TextBlock Text="Height" />
+                    <TextBox Width="80" Text="{Binding ActiveGenerationRequest.Height.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Steps -->
+            <TextBlock Margin="0,8,0,0" Text="Steps" />
+            <TextBox Width="80" Text="{Binding ActiveGenerationRequest.Steps.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <!-- Seed -->
+            <TextBlock Margin="0,8,0,0" Text="Seed" />
+            <TextBox Width="120" Text="{Binding ActiveGenerationRequest.Seed.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        </StackPanel>
+        <Button
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="120"
+            Margin="5"
+            Padding="2"
+            HorizontalAlignment="Right"
+            Command="{Binding GenerateAsyncCommand}"
+            Content="Generate" />
     </Grid>
 </Window>
