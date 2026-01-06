@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
-using CommunityToolkit.Mvvm.Input;
+using System.Windows;
+using Prism.Commands;
 using Prism.Mvvm;
+using SDTaskRunner.Core;
 using SDTaskRunner.Core.Progress;
 using SDTaskRunner.Models;
 using SDTaskRunner.Utils;
@@ -12,6 +13,7 @@ namespace SDTaskRunner.ViewModels;
 public class MainWindowViewModel : BindableBase
 {
     private readonly AppVersionInfo appVersionInfo = new();
+    private readonly GenerationWorker worker = new();
     private GenerationRequest activeGenerationRequest;
     private IProgressSource progressSource;
 
@@ -19,6 +21,16 @@ public class MainWindowViewModel : BindableBase
     {
         PendingRequestsViewModel.SelectedItemChanged += request => ActiveGenerationRequest = request;
         RunningRequestsViewModel.SelectedItemChanged += request => ActiveGenerationRequest = request;
+
+        worker.RequestStarted += OnRequestStarted;
+
+        // worker.ProgressUpdated += OnProgressUpdated;
+        worker.RequestCompleted += request =>
+        {
+            request.Status = GenerationStatus.Finished;
+            Console.WriteLine($"Request {request.Header} completed.");
+        };
+
         SetDummies();
     }
 
@@ -28,27 +40,33 @@ public class MainWindowViewModel : BindableBase
 
     public GenerationRequestListViewModel RunningRequestsViewModel { get; } = new ();
 
-    public AsyncRelayCommand GenerateAsyncCommand => new (async () =>
+    public DelegateCommand GenerateAsyncCommand => new (() =>
     {
         var request = ActiveGenerationRequest;
-        request.Steps.Value = 5;
-
-        progressSource = new FakeGenerationRunner(
-            samplingSteps: request.Steps.Value,
-            totalTime: TimeSpan.FromSeconds(5));
-
-        await foreach (var progress in progressSource.RunAsync(CancellationToken.None))
+        if (request.Steps.Value == 0)
         {
-            // ここが /progress を叩いてるのと同じ
-            // UpdateUi(progress);
-            Console.WriteLine($"progress = {progress.Progress}");
+            request.Steps.Value = 5;
         }
+
+        worker.Enqueue(request);
     });
 
     public GenerationRequest ActiveGenerationRequest
     {
         get => activeGenerationRequest;
         set => SetProperty(ref activeGenerationRequest, value);
+    }
+
+    private void OnRequestStarted(GenerationRequest request)
+    {
+        // Running に追加
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            RunningRequestsViewModel.Items.Add(request);
+        });
+
+        // UI 編集対象を更新（任意）
+        // ActiveGenerationRequest = request;
     }
 
     [Conditional("DEBUG")]
