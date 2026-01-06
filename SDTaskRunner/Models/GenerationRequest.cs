@@ -15,5 +15,7 @@
         public RequestField<int> Steps { get; init; } = RequestField<int>.Undefined();
 
         public RequestField<long> Seed { get; init; } = RequestField<long>.Undefined();
+
+        public GenerationStatus Status { get; set; } = GenerationStatus.Waiting;
     }
 }
