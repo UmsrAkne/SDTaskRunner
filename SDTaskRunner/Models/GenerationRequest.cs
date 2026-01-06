@@ -2,6 +2,8 @@
 {
     public class GenerationRequest
     {
+        public string Header { get; set; } = string.Empty;
+
         public RequestField<string> Prompt { get; init; } = RequestField<string>.Undefined();
 
         public RequestField<string> NegativePrompt { get; init; } = RequestField<string>.Undefined();

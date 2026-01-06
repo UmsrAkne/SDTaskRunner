@@ -22,6 +22,10 @@ public class MainWindowViewModel : BindableBase
 
     public string Title => appVersionInfo.GetAppNameWithVersion();
 
+    public GenerationRequestListViewModel PendingRequestsViewModel { get; } = new ();
+
+    public GenerationRequestListViewModel RunningRequestsViewModel { get; } = new ();
+
     public AsyncRelayCommand GenerateAsyncCommand => new (async () =>
     {
         var request = GenerationRequest;
@@ -56,5 +60,14 @@ public class MainWindowViewModel : BindableBase
         GenerationRequest.Prompt.Value = "A painting of a squirrel eating a burger";
         GenerationRequest.NegativePrompt.Value = "Negative prompt test.";
         GenerationRequest.Seed.Value = 1234;
+
+        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 1", });
+        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 2", });
+        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 3", });
+
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 11", });
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 12", });
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 13", });
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 14", });
     }
 }
