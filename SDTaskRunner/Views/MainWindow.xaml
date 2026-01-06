@@ -60,32 +60,32 @@
 
             <!-- Prompt -->
             <TextBlock Text="Prompt" />
-            <TextBox Text="{Binding GenerationRequest.Prompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding ActiveGenerationRequest.Prompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- Negative Prompt -->
             <TextBlock Margin="0,8,0,0" Text="Negative Prompt" />
-            <TextBox Text="{Binding GenerationRequest.NegativePrompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding ActiveGenerationRequest.NegativePrompt.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- Width / Height -->
             <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                 <StackPanel>
                     <TextBlock Text="Width" />
-                    <TextBox Width="80" Text="{Binding GenerationRequest.Width.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Width="80" Text="{Binding ActiveGenerationRequest.Width.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
                 <StackPanel Margin="12,0,0,0">
                     <TextBlock Text="Height" />
-                    <TextBox Width="80" Text="{Binding GenerationRequest.Height.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Width="80" Text="{Binding ActiveGenerationRequest.Height.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </StackPanel>
 
             <!-- Steps -->
             <TextBlock Margin="0,8,0,0" Text="Steps" />
-            <TextBox Width="80" Text="{Binding GenerationRequest.Steps.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Width="80" Text="{Binding ActiveGenerationRequest.Steps.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <!-- Seed -->
             <TextBlock Margin="0,8,0,0" Text="Seed" />
-            <TextBox Width="120" Text="{Binding GenerationRequest.Seed.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Width="120" Text="{Binding ActiveGenerationRequest.Seed.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         </StackPanel>
         <Button

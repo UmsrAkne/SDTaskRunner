@@ -12,11 +12,13 @@ namespace SDTaskRunner.ViewModels;
 public class MainWindowViewModel : BindableBase
 {
     private readonly AppVersionInfo appVersionInfo = new();
-    private GenerationRequest generationRequest;
+    private GenerationRequest activeGenerationRequest;
     private IProgressSource progressSource;
 
     public MainWindowViewModel()
     {
+        PendingRequestsViewModel.SelectedItemChanged += request => ActiveGenerationRequest = request;
+        RunningRequestsViewModel.SelectedItemChanged += request => ActiveGenerationRequest = request;
         SetDummies();
     }
 
@@ -28,7 +30,7 @@ public class MainWindowViewModel : BindableBase
 
     public AsyncRelayCommand GenerateAsyncCommand => new (async () =>
     {
-        var request = GenerationRequest;
+        var request = ActiveGenerationRequest;
         request.Steps.Value = 5;
 
         progressSource = new FakeGenerationRunner(
@@ -43,31 +45,31 @@ public class MainWindowViewModel : BindableBase
         }
     });
 
-    public GenerationRequest GenerationRequest
+    public GenerationRequest ActiveGenerationRequest
     {
-        get => generationRequest;
-        set => SetProperty(ref generationRequest, value);
+        get => activeGenerationRequest;
+        set => SetProperty(ref activeGenerationRequest, value);
     }
 
     [Conditional("DEBUG")]
     private void SetDummies()
     {
-        GenerationRequest = new();
+        ActiveGenerationRequest = new();
 
-        GenerationRequest.Height.Value = 512;
-        GenerationRequest.Width.Value = 480;
-        GenerationRequest.Steps.Value = 10;
-        GenerationRequest.Prompt.Value = "A painting of a squirrel eating a burger";
-        GenerationRequest.NegativePrompt.Value = "Negative prompt test.";
-        GenerationRequest.Seed.Value = 1234;
+        ActiveGenerationRequest.Height.Value = 512;
+        ActiveGenerationRequest.Width.Value = 480;
+        ActiveGenerationRequest.Steps.Value = 10;
+        ActiveGenerationRequest.Prompt.Value = "A painting of a squirrel eating a burger";
+        ActiveGenerationRequest.NegativePrompt.Value = "Negative prompt test.";
+        ActiveGenerationRequest.Seed.Value = 1234;
 
-        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 1", });
-        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 2", });
-        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 3", });
+        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 1", Width = { Value = 120, }, });
+        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 2", Width = { Value = 121, }, });
+        RunningRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 3", Width = { Value = 122, }, });
 
-        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 11", });
-        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 12", });
-        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 13", });
-        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 14", });
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 11", Width = { Value = 123, }, });
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 12", Width = { Value = 124, }, });
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 13", Width = { Value = 125, }, });
+        PendingRequestsViewModel.Items.Add(new GenerationRequest() { Header = "Request 14", Width = { Value = 126, }, });
     }
 }

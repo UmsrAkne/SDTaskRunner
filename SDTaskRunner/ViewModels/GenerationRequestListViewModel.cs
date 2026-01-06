@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Prism.Mvvm;
 using SDTaskRunner.Models;
 
@@ -8,12 +9,20 @@ namespace SDTaskRunner.ViewModels
     {
         private GenerationRequest selectedItem;
 
+        public event Action<GenerationRequest> SelectedItemChanged;
+
         public ObservableCollection<GenerationRequest> Items { get; } = new ();
 
         public GenerationRequest SelectedItem
         {
             get => selectedItem;
-            set => SetProperty(ref selectedItem, value);
+            set
+            {
+                if (SetProperty(ref selectedItem, value))
+                {
+                    SelectedItemChanged?.Invoke(value);
+                }
+            }
         }
     }
 }
