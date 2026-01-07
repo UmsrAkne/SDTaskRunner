@@ -1,7 +1,11 @@
-﻿namespace SDTaskRunner.Models
+﻿using Prism.Mvvm;
+
+namespace SDTaskRunner.Models
 {
-    public class GenerationRequest
+    public class GenerationRequest : BindableBase
     {
+        private GenerationStatus status = GenerationStatus.Waiting;
+
         public string Header { get; set; } = string.Empty;
 
         public RequestField<string> Prompt { get; init; } = RequestField<string>.Undefined();
@@ -16,6 +20,6 @@
 
         public RequestField<long> Seed { get; init; } = RequestField<long>.Undefined();
 
-        public GenerationStatus Status { get; set; } = GenerationStatus.Waiting;
+        public GenerationStatus Status { get => status; set => SetProperty(ref status, value); }
     }
 }

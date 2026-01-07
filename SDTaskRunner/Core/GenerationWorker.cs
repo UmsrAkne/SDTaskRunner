@@ -45,6 +45,7 @@ namespace SDTaskRunner.Core
             await foreach (var request in channel.Reader.ReadAllAsync(cts.Token))
             {
                 RequestStarted?.Invoke(request);
+                request.Status = GenerationStatus.Running;
 
                 var runner = new FakeGenerationRunner(
                     request.Steps.Value,
