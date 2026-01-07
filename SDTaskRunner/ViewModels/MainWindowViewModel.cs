@@ -4,7 +4,6 @@ using System.Windows;
 using Prism.Commands;
 using Prism.Mvvm;
 using SDTaskRunner.Core;
-using SDTaskRunner.Core.Progress;
 using SDTaskRunner.Models;
 using SDTaskRunner.Utils;
 
@@ -15,7 +14,6 @@ public class MainWindowViewModel : BindableBase
     private readonly AppVersionInfo appVersionInfo = new();
     private readonly GenerationWorker worker = new();
     private GenerationRequest activeGenerationRequest;
-    private IProgressSource progressSource;
 
     public MainWindowViewModel()
     {
@@ -54,7 +52,7 @@ public class MainWindowViewModel : BindableBase
     public GenerationRequest ActiveGenerationRequest
     {
         get => activeGenerationRequest;
-        set => SetProperty(ref activeGenerationRequest, value);
+        private set => SetProperty(ref activeGenerationRequest, value);
     }
 
     private void OnRequestStarted(GenerationRequest request)

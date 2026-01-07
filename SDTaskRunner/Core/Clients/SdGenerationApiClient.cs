@@ -42,11 +42,11 @@ namespace SDTaskRunner.Core.Clients
 
         private sealed class Txt2ImgResponse
         {
-            public string[] Images { get; set; } = Array.Empty<string>();
+            public string[] Images { get; init; } = Array.Empty<string>();
 
-            public object Parameters { get; set; }
+            public object Parameters { get; init; }
 
-            public string Info { get; set; }
+            public string Info { get; init; }
         }
     }
 }
